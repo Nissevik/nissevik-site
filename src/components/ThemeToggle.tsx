@@ -8,6 +8,11 @@ import type { Dictionary } from "@/lib/dictionaries";
 type ThemeValue = "light" | "dark" | "system";
 const cycle: ThemeValue[] = ["light", "dark", "system"];
 
+// View Transitions API är fortfarande relativt nytt – typa det försiktigt.
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (callback: () => void) => unknown;
+};
+
 export function ThemeToggle({ dict }: { dict: Dictionary["theme"] }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -22,9 +27,41 @@ export function ThemeToggle({ dict }: { dict: Dictionary["theme"] }) {
   const labelFor = (value: ThemeValue) =>
     value === "light" ? dict.light : value === "dark" ? dict.dark : dict.system;
 
-  const next = () => {
+  const next = (event: React.MouseEvent<HTMLButtonElement>) => {
     const idx = cycle.indexOf(current);
-    setTheme(cycle[(idx + 1) % cycle.length]);
+    const nextValue = cycle[(idx + 1) % cycle.length];
+    const applyTheme = () => setTheme(nextValue);
+
+    // Fallback: ingen animation om View Transitions saknas eller användaren
+    // har reduce-motion. next-themes kör direkt utan wrapper.
+    const doc = document as ViewTransitionDocument;
+    const supportsVT = typeof doc.startViewTransition === "function";
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (!supportsVT || reduced) {
+      applyTheme();
+      return;
+    }
+
+    // Räkna ut knappens mittpunkt i viewport-koordinater samt största avståndet
+    // från den punkten till något av viewportens hörn – det blir cirkelns slutradie.
+    const rect = event.currentTarget.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const maxRadius = Math.hypot(
+      Math.max(cx, window.innerWidth - cx),
+      Math.max(cy, window.innerHeight - cy),
+    );
+
+    const root = document.documentElement;
+    root.style.setProperty("--theme-x", `${cx}px`);
+    root.style.setProperty("--theme-y", `${cy}px`);
+    root.style.setProperty("--theme-r", `${maxRadius}px`);
+
+    // Viktigt: next-themes klass-byte måste ske inuti transition-callbacken,
+    // annars fångar VT inte färgskiftet mellan gammal och ny root.
+    doc.startViewTransition!(applyTheme);
   };
 
   return (
