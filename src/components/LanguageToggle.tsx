@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 import { languages, type Language } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/dictionaries";
 
@@ -24,36 +25,35 @@ export function LanguageToggle({
   const pathname = usePathname() || `/${current}`;
 
   return (
-    <div>
-      <div className="mb-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">
-        {dict.label}
-      </div>
-      <div
-        role="radiogroup"
-        aria-label={dict.label}
-        className="flex rounded-md border border-border bg-muted/40 p-0.5"
-      >
-        {languages.map((lang) => {
-          const active = lang === current;
-          const label = dict[lang];
-          return (
+    <div
+      aria-label={dict.label}
+      className="flex items-center gap-1.5 text-xs font-medium"
+    >
+      {languages.map((lang, i) => {
+        const active = lang === current;
+        return (
+          <Fragment key={lang}>
+            {/* Diskret separator mellan språkkoderna */}
+            {i > 0 && (
+              <span aria-hidden className="text-muted-foreground/60">
+                /
+              </span>
+            )}
             <Link
-              key={lang}
               href={swapLangSegment(pathname, lang)}
-              role="radio"
-              aria-checked={active}
+              aria-current={active ? "true" : undefined}
               className={
-                "flex-1 rounded px-2 py-1 text-center text-xs transition-colors " +
+                "transition duration-200 ease-out " +
                 (active
-                  ? "bg-background text-foreground shadow-sm"
+                  ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground")
               }
             >
-              {label}
+              {dict[lang]}
             </Link>
-          );
-        })}
-      </div>
+          </Fragment>
+        );
+      })}
     </div>
   );
 }

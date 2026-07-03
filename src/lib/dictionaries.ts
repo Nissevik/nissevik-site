@@ -24,6 +24,13 @@ export type Dictionary = {
     sv: string;
     en: string;
   };
+  sidebar: {
+    open: string;
+    close: string;
+  };
+  breadcrumb: {
+    label: string;
+  };
 };
 
 const en: Dictionary = {
@@ -49,6 +56,13 @@ const en: Dictionary = {
     sv: "SV",
     en: "EN",
   },
+  sidebar: {
+    open: "Open menu",
+    close: "Close menu",
+  },
+  breadcrumb: {
+    label: "Breadcrumb",
+  },
 };
 
 const sv: Dictionary = {
@@ -73,6 +87,13 @@ const sv: Dictionary = {
     label: "Språk",
     sv: "SV",
     en: "EN",
+  },
+  sidebar: {
+    open: "Öppna meny",
+    close: "Stäng meny",
+  },
+  breadcrumb: {
+    label: "Brödsmulor",
   },
 };
 

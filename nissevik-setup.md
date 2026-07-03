@@ -68,7 +68,7 @@ git commit -m "Initial scaffold: sidebar, i18n, theme toggle"
 
 Skapa ett nytt repo på GitHub (t.ex. `nissevik-site`), sedan:
 ```bash
-git remote add origin git@github.com:Nissevik/nissevik-site.git
+git remote add origin https://github.com/Nissevik/nissevik-site.git
 git branch -M main
 git push -u origin main
 ```
@@ -85,7 +85,7 @@ ssh hem-server
 Klona, bygg, starta med PM2:
 ```bash
 cd ~
-git clone git@github.com:Nissevik/nissevik-site.git nissevik
+git clone https://github.com/Nissevik/nissevik-site.git nissevik
 cd nissevik
 npm install
 npm run build

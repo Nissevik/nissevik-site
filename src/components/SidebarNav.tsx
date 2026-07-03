@@ -29,14 +29,16 @@ export function SidebarNav({
             : pathname === href || pathname.startsWith(`${href}/`);
         return (
           <li key={item.id}>
+            {/* inline-block så att markeringen enbart hamnar runt själva texten,
+                inte hela radens bredd. */}
             <Link
               href={href}
               aria-current={active ? "page" : undefined}
               className={
-                "block rounded-md px-2 py-1.5 text-sm transition-colors " +
+                "inline-block rounded-md px-2 py-1 text-sm transition-colors duration-150 ease-out " +
                 (active
                   ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground")
+                  : "text-muted-foreground hover:bg-muted/70 hover:text-foreground active:bg-muted active:text-foreground")
               }
             >
               {navDict[item.id]}
