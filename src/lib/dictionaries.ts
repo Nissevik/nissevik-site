@@ -32,6 +32,16 @@ export type Dictionary = {
     back: string;
     postedOn: string;
   };
+  papers: {
+    heading: string;
+    course: string;
+    year: string;
+    coauthors: string;
+    abstract: string;
+    openPdf: string;
+    externalLink: string;
+    back: string;
+  };
   reading: {
     status: {
       reading: string;
@@ -81,6 +91,16 @@ const en: Dictionary = {
     back: "Back to Writing",
     postedOn: "Posted on",
   },
+  papers: {
+    heading: "Academic writing",
+    course: "Course",
+    year: "Year",
+    coauthors: "Co-authors",
+    abstract: "Abstract",
+    openPdf: "Open PDF",
+    externalLink: "External link",
+    back: "Back to Projects",
+  },
   reading: {
     status: {
       reading: "Reading",
@@ -129,6 +149,16 @@ const sv: Dictionary = {
   writing: {
     back: "Tillbaka till Skrivande",
     postedOn: "Publicerat",
+  },
+  papers: {
+    heading: "Akademiska texter",
+    course: "Kurs",
+    year: "År",
+    coauthors: "Medförfattare",
+    abstract: "Sammanfattning",
+    openPdf: "Öppna PDF",
+    externalLink: "Extern länk",
+    back: "Tillbaka till Projekt",
   },
   reading: {
     status: {

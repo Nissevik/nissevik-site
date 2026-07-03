@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Book, BookStatus } from "@/lib/books";
 import type { Dictionary } from "@/lib/dictionaries";
 
@@ -202,21 +202,17 @@ function Controls({
       {genres.length > 0 && (
         <>
           <Divider />
-          {/* Minimal select – ingen border, transparent bakgrund. Default-alternativet
-              ("Alla genrer" / "All genres") beskriver sig självt utan extern etikett. */}
-          <select
+          {/* Egen dropdown – native select gick inte att styla på ett sätt som passade
+              övriga inline-kontroller. "Alla genrer" är default och ligger först. */}
+          <GenreSelect
             value={genre}
-            onChange={(e) => onGenreChange(e.target.value)}
-            aria-label={dict.controls.genre}
-            className="cursor-pointer border-0 bg-transparent p-0 text-xs text-muted-foreground transition-colors duration-200 ease-out hover:text-foreground focus:text-foreground focus:outline-none"
-          >
-            <option value="all">{dict.controls.genreAll}</option>
-            {genres.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
+            onChange={onGenreChange}
+            options={[
+              { value: "all", label: dict.controls.genreAll },
+              ...genres.map((g) => ({ value: g, label: g })),
+            ]}
+            ariaLabel={dict.controls.genre}
+          />
         </>
       )}
     </div>
@@ -228,6 +224,188 @@ function Divider() {
     <span aria-hidden className="text-muted-foreground/30">
       |
     </span>
+  );
+}
+
+// Egen dropdown för genre-filtret. Matchar tonen på de andra inline-kontrollerna
+// men får en riktig popup-lista med korrekt aria för listbox-mönstret.
+type SelectOption = { value: string; label: string };
+
+function GenreSelect({
+  value,
+  onChange,
+  options,
+  ariaLabel,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: SelectOption[];
+  ariaLabel: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [highlight, setHighlight] = useState(0);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const listboxId = useId();
+
+  const currentIndex = Math.max(
+    0,
+    options.findIndex((o) => o.value === value),
+  );
+  const currentLabel = options[currentIndex]?.label ?? "";
+
+  const closeMenu = () => setOpen(false);
+  const openMenu = () => {
+    // Starta markören på nuvarande val så piltangenter känns naturliga
+    setHighlight(currentIndex);
+    setOpen(true);
+  };
+
+  // Klick utanför wrappen stänger menyn
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: MouseEvent) => {
+      if (wrapRef.current?.contains(e.target as Node)) return;
+      closeMenu();
+    };
+    document.addEventListener("mousedown", onPointer);
+    return () => document.removeEventListener("mousedown", onPointer);
+  }, [open]);
+
+  // Escape stänger och returnerar fokus till knappen
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeMenu();
+        triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  // Flytta fokus till listan när den öppnas så piltangenter tas emot direkt
+  useEffect(() => {
+    if (open) listRef.current?.focus();
+  }, [open]);
+
+  const selectAt = (i: number) => {
+    const opt = options[i];
+    if (!opt) return;
+    onChange(opt.value);
+    closeMenu();
+    triggerRef.current?.focus();
+  };
+
+  const onTriggerKey = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      openMenu();
+    }
+  };
+
+  const onListKey = (e: React.KeyboardEvent<HTMLUListElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlight((h) => Math.min(options.length - 1, h + 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlight((h) => Math.max(0, h - 1));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setHighlight(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setHighlight(options.length - 1);
+    } else if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      selectAt(highlight);
+    }
+  };
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => (open ? closeMenu() : openMenu())}
+        onKeyDown={onTriggerKey}
+        aria-label={ariaLabel}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={listboxId}
+        className={
+          "inline-flex items-center gap-1 text-xs transition-colors duration-200 ease-out focus-visible:outline-none " +
+          (open
+            ? "text-foreground"
+            : "text-muted-foreground hover:text-foreground")
+        }
+      >
+        <span>{currentLabel}</span>
+        <IconChevronDown open={open} />
+      </button>
+
+      {open && (
+        <ul
+          id={listboxId}
+          ref={listRef}
+          role="listbox"
+          aria-label={ariaLabel}
+          tabIndex={-1}
+          onKeyDown={onListKey}
+          className="absolute left-0 top-full z-30 mt-1.5 max-h-72 min-w-[9rem] overflow-y-auto rounded-md border border-border bg-background/95 p-1 text-xs shadow-sm backdrop-blur focus:outline-none"
+        >
+          {options.map((opt, i) => {
+            const selected = opt.value === value;
+            const highlighted = highlight === i;
+            return (
+              <li
+                key={opt.value}
+                role="option"
+                aria-selected={selected}
+                onMouseEnter={() => setHighlight(i)}
+                onClick={() => selectAt(i)}
+                className={
+                  "cursor-pointer whitespace-nowrap rounded px-2 py-1.5 transition-colors duration-75 ease-out " +
+                  (highlighted
+                    ? "bg-muted text-foreground"
+                    : selected
+                      ? "font-medium text-foreground"
+                      : "text-muted-foreground")
+                }
+              >
+                {opt.label}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function IconChevronDown({ open }: { open: boolean }) {
+  return (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={
+        "transition-transform duration-150 ease-out " +
+        (open ? "rotate-180" : "")
+      }
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
   );
 }
 
