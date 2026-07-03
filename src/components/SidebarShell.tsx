@@ -156,7 +156,8 @@ export function SidebarShell({
           >
             {dict.siteTitle}
           </Link>
-          {currentSection && currentSection.id !== "home" && (
+          {/* Ingen tail på hemsidan – där matchar `sectionSegment` inget nav-item */}
+          {currentSection && (
             <>
               <span aria-hidden className="text-muted-foreground">
                 /
@@ -180,28 +181,20 @@ export function SidebarShell({
           (desktopOpen ? "md:translate-x-0 " : "md:-translate-x-full ")
         }
       >
-        <div className="mb-6">
-          <Link
-            href={`/${lang}`}
-            onClick={handleNavClick}
-            className="text-base font-semibold tracking-tight text-foreground"
-          >
-            {dict.siteTitle}
-          </Link>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {dict.siteTagline}
-          </p>
-        </div>
-
+        {/* Rubrikblocket är borttaget – brödsmulorna i topraden visar redan sidnamnet. */}
         <nav
           aria-label={dict.siteTitle}
           className="flex-1 overflow-y-auto"
           onClick={handleNavClick}
         >
           <SidebarNav items={primaryNav} lang={lang} navDict={dict.nav} />
-          {/* Kort avdelare, bara en liten bit bred istället för hela menyns bredd */}
-          <div className="my-4 h-px w-8 bg-border" aria-hidden />
-          <SidebarNav items={secondaryNav} lang={lang} navDict={dict.nav} />
+          {/* Avdelaren + sekundärlistan renderas bara om det finns sekundärposter */}
+          {secondaryNav.length > 0 && (
+            <>
+              <div className="my-4 h-px w-8 bg-border" aria-hidden />
+              <SidebarNav items={secondaryNav} lang={lang} navDict={dict.nav} />
+            </>
+          )}
         </nav>
 
         {/* Minimala kontroller: ikon-knapp för tema + kompakt SV/EN-växlare */}
@@ -211,13 +204,9 @@ export function SidebarShell({
         </div>
       </aside>
 
-      {/* Innehållet ligger stilla oavsett om menyn är öppen – menyn overlay:ar ovanpå. */}
-      <main>
-        {/* pt-16 lämnar plats åt den fixerade toggle-knappen */}
-        <div className="mx-auto max-w-2xl px-6 pb-16 pt-16 md:px-10">
-          <article className="prose">{children}</article>
-        </div>
-      </main>
+      {/* Innehållet ligger stilla oavsett om menyn är öppen – menyn overlay:ar ovanpå.
+          Bredd och padding sätts av varje sida via <Page> så att t.ex. Läslistan får bli bredare. */}
+      <main>{children}</main>
     </div>
   );
 }

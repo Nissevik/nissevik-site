@@ -5,13 +5,10 @@ export type Dictionary = {
   siteTitle: string;
   siteTagline: string;
   nav: {
-    home: string;
-    about: string;
     projects: string;
     writing: string;
     reading: string;
     investments: string;
-    contact: string;
   };
   theme: {
     label: string;
@@ -31,19 +28,32 @@ export type Dictionary = {
   breadcrumb: {
     label: string;
   };
+  reading: {
+    status: {
+      reading: string;
+      wanted: string;
+      read: string;
+    };
+    controls: {
+      sort: string;
+      sortDate: string;
+      sortRating: string;
+      year: string;
+      yearAll: string;
+      genre: string;
+      genreAll: string;
+    };
+  };
 };
 
 const en: Dictionary = {
   siteTitle: "Nissevik",
   siteTagline: "A quiet corner on the web.",
   nav: {
-    home: "Home",
-    about: "About",
     projects: "Projects",
     writing: "Writing",
-    reading: "Reading list",
-    investments: "Investments",
-    contact: "Contact",
+    reading: "Reading",
+    investments: "Investing",
   },
   theme: {
     label: "Theme",
@@ -63,19 +73,32 @@ const en: Dictionary = {
   breadcrumb: {
     label: "Breadcrumb",
   },
+  reading: {
+    status: {
+      reading: "Reading",
+      wanted: "To read",
+      read: "Read",
+    },
+    controls: {
+      sort: "Sort",
+      sortDate: "Latest read",
+      sortRating: "Highest rating",
+      year: "Year",
+      yearAll: "All",
+      genre: "Genre",
+      genreAll: "All genres",
+    },
+  },
 };
 
 const sv: Dictionary = {
   siteTitle: "Nissevik",
   siteTagline: "En tyst plats på nätet.",
   nav: {
-    home: "Hem",
-    about: "Om",
     projects: "Projekt",
-    writing: "Texter",
-    reading: "Läslista",
-    investments: "Investeringar",
-    contact: "Kontakt",
+    writing: "Skrivande",
+    reading: "Läsning",
+    investments: "Investering",
   },
   theme: {
     label: "Tema",
@@ -94,6 +117,22 @@ const sv: Dictionary = {
   },
   breadcrumb: {
     label: "Brödsmulor",
+  },
+  reading: {
+    status: {
+      reading: "Läser",
+      wanted: "Vill läsa",
+      read: "Läst",
+    },
+    controls: {
+      sort: "Sortera",
+      sortDate: "Senast läst",
+      sortRating: "Högst betyg",
+      year: "År",
+      yearAll: "Alla",
+      genre: "Genre",
+      genreAll: "Alla genrer",
+    },
   },
 };
 

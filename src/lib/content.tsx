@@ -1,20 +1,15 @@
 import type { ComponentType } from "react";
 import type { Language } from "./i18n";
-import type { Dictionary } from "./dictionaries";
 
-// Statisk mappning från (section, lang) till MDX-modul.
-// Statiska imports gör att Next kan analysera och bundla varje MDX vid build.
-type SectionKey = keyof Dictionary["nav"];
+// Sektioner som har MDX-innehåll. "home" är inte en menypost men har fortfarande
+// en egen sida (renderad av src/app/[lang]/page.tsx).
+type SectionKey = "home" | "projects" | "writing" | "reading" | "investments";
 type MDXModule = { default: ComponentType };
 
 const modules: Record<SectionKey, Record<Language, () => Promise<MDXModule>>> = {
   home: {
     sv: () => import("@content/home/sv.mdx"),
     en: () => import("@content/home/en.mdx"),
-  },
-  about: {
-    sv: () => import("@content/about/sv.mdx"),
-    en: () => import("@content/about/en.mdx"),
   },
   projects: {
     sv: () => import("@content/projects/sv.mdx"),
@@ -31,10 +26,6 @@ const modules: Record<SectionKey, Record<Language, () => Promise<MDXModule>>> = 
   investments: {
     sv: () => import("@content/investments/sv.mdx"),
     en: () => import("@content/investments/en.mdx"),
-  },
-  contact: {
-    sv: () => import("@content/contact/sv.mdx"),
-    en: () => import("@content/contact/en.mdx"),
   },
 };
 

@@ -1,6 +1,10 @@
 import { notFound } from "next/navigation";
 import { isLanguage } from "@/lib/i18n";
 import { loadSection } from "@/lib/content";
+import { getDictionary } from "@/lib/dictionaries";
+import { books } from "@/lib/books";
+import { BookGrid } from "@/components/BookGrid";
+import { Page, Prose } from "@/components/Page";
 
 export default async function ReadingPage({
   params,
@@ -10,5 +14,19 @@ export default async function ReadingPage({
   const { lang } = await params;
   if (!isLanguage(lang)) notFound();
   const Content = await loadSection("reading", lang);
-  return <Content />;
+  const dict = getDictionary(lang);
+
+  return (
+    <Page wide>
+      {/* Introtexten hålls i behaglig textbredd även om sidan i övrigt är bred */}
+      <div className="max-w-2xl">
+        <Prose>
+          <Content />
+        </Prose>
+      </div>
+      <div className="mt-8">
+        <BookGrid books={books} dict={dict.reading} />
+      </div>
+    </Page>
+  );
 }
