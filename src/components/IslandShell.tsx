@@ -28,13 +28,31 @@ export function IslandShell({
   const mobileBtnRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Tona bort tema/språk-kontrollerna när användaren skrollar nedåt.
-  // Litet tröskelvärde undviker fladder precis vid toppen.
-  const [atTop, setAtTop] = useState(true);
+  // Auto-hide: göm nav vid nedåtskroll, visa vid uppåtskroll. Alltid synlig
+  // nära toppen. rAF-throttlar scroll-eventet så det inte flimrar.
+  const [hidden, setHidden] = useState(false);
   useEffect(() => {
-    const onScroll = () => setAtTop(window.scrollY < 20);
-    // Synka initialt läge (t.ex. om sidan laddas mitt i ett scroll-läge)
-    onScroll();
+    let lastY = window.scrollY;
+    let ticking = false;
+    const update = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+      if (y < 20) {
+        setHidden(false);
+      } else if (delta > 6) {
+        setHidden(true);
+      } else if (delta < -6) {
+        setHidden(false);
+      }
+      lastY = y;
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -75,10 +93,19 @@ export function IslandShell({
 
   const closeMobile = () => setMobileOpen(false);
 
+  // Om mobilmenyn är öppen tvingar vi fram islanden även vid nedåtskroll.
+  const shouldHide = hidden && !mobileOpen;
+
   return (
     <div className="relative min-h-screen">
-      {/* Island uppe till vänster. Lätt rundade hörn (rounded-lg) – inte helrund pill. */}
-      <div className="fixed left-4 top-4 z-40 max-w-[calc(100%-2rem)]">
+      {/* Island uppe till vänster. Lätt rundade hörn (rounded-lg) – inte helrund pill.
+          Glider bort uppåt vid nedåtskroll för en mer uppslukande läskänsla. */}
+      <div
+        className={
+          "fixed left-4 top-4 z-40 max-w-[calc(100%-2rem)] transition-transform duration-200 ease-out " +
+          (shouldHide ? "-translate-y-[150%]" : "translate-y-0")
+        }
+      >
         <div className="relative">
           <nav
             aria-label={dict.siteTitle}
@@ -172,12 +199,14 @@ export function IslandShell({
       </div>
 
       {/* Tema/språk-kontroll i övre högra hörnet – ren text, ingen bakgrund.
-          Tonar ut mjukt när användaren skrollar bort från toppen. */}
+          Glider bort tillsammans med islanden vid nedåtskroll. */}
       <div
-        aria-hidden={!atTop}
+        aria-hidden={shouldHide}
         className={
-          "fixed right-4 top-4 z-40 flex items-center gap-3 transition-opacity duration-300 ease-out " +
-          (atTop ? "opacity-100" : "pointer-events-none opacity-0")
+          "fixed right-4 top-4 z-40 flex items-center gap-3 transition-all duration-200 ease-out " +
+          (shouldHide
+            ? "pointer-events-none -translate-y-[150%] opacity-0"
+            : "translate-y-0 opacity-100")
         }
       >
         <ThemeToggle dict={dict.theme} />

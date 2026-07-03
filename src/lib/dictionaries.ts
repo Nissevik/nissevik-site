@@ -28,6 +28,10 @@ export type Dictionary = {
   breadcrumb: {
     label: string;
   };
+  writing: {
+    back: string;
+    postedOn: string;
+  };
   reading: {
     status: {
       reading: string;
@@ -73,6 +77,10 @@ const en: Dictionary = {
   breadcrumb: {
     label: "Breadcrumb",
   },
+  writing: {
+    back: "Back to Writing",
+    postedOn: "Posted on",
+  },
   reading: {
     status: {
       reading: "Reading",
@@ -117,6 +125,10 @@ const sv: Dictionary = {
   },
   breadcrumb: {
     label: "Brödsmulor",
+  },
+  writing: {
+    back: "Tillbaka till Skrivande",
+    postedOn: "Publicerat",
   },
   reading: {
     status: {

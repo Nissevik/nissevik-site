@@ -109,3 +109,26 @@ body {
   text-decoration: none;
 }
 
+/* Serif-typografi för Writing. Ärvs ner till rubriker, brödtext, listor osv. */
+.font-editorial {
+  font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
+}
+
+/* Redaktionell blockquote: italic, centrerad, dämpad. Endast inne i Writing. */
+.font-editorial .prose blockquote {
+  font-style: italic;
+  text-align: center;
+  color: var(--muted-foreground);
+  margin: 1.75rem auto;
+  max-width: 42ch;
+}
+.font-editorial .prose blockquote p {
+  margin-bottom: 0.25rem;
+}
+
+/* Luftigare radavstånd och lite generösare storlek passar serif-läsning */
+.font-editorial .prose {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+
