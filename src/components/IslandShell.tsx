@@ -109,7 +109,9 @@ export function IslandShell({
         <div className="relative">
           <nav
             aria-label={dict.siteTitle}
-            className="flex items-center gap-1 rounded-lg border border-border bg-background/85 px-2 py-1.5 shadow-sm backdrop-blur"
+            // Gap 0 på desktop så länkarnas hover-bakgrund ligger kant i kant.
+            // Litet gap kvar på mobil så brand + hamburgare inte klämmer ihop.
+            className="flex items-center gap-1 rounded-lg border border-border bg-background/85 px-2 py-1.5 shadow-sm backdrop-blur md:gap-0"
           >
             {/* Nissevik = brand + hem-länk. Bold/markerad endast när vi är på startsidan. */}
             <Link
@@ -117,17 +119,18 @@ export function IslandShell({
               onClick={closeMobile}
               aria-current={homeActive ? "page" : undefined}
               className={
-                "rounded-md px-2.5 py-1 text-sm tracking-tight transition-colors duration-75 ease-out " +
+                "rounded-md px-2.5 py-1 text-sm tracking-tight transition-colors duration-75 ease-out hover:bg-muted " +
                 (homeActive
                   ? "font-semibold text-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground")
+                  : "text-muted-foreground hover:text-foreground")
               }
             >
               {dict.siteTitle}
             </Link>
 
-            {/* Alla länkar syns direkt på desktop – ett klick från vart som helst */}
-            <div className="hidden items-center gap-0.5 md:flex">
+            {/* Alla länkar syns direkt på desktop – ett klick från vart som helst.
+                Ingen gap mellan länkar så hover-bakgrunder ligger kant i kant. */}
+            <div className="hidden items-center md:flex">
               {navItems.map((item) => {
                 const href = item.href ? `${basePath}/${item.href}` : basePath;
                 const active = isActive(item);
@@ -137,10 +140,10 @@ export function IslandShell({
                     href={href}
                     aria-current={active ? "page" : undefined}
                     className={
-                      "whitespace-nowrap rounded-md px-2.5 py-1 text-sm transition-colors duration-75 ease-out " +
+                      "whitespace-nowrap rounded-md px-2.5 py-1 text-sm transition-colors duration-75 ease-out hover:bg-muted " +
                       (active
                         ? "font-semibold text-foreground"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted active:text-foreground")
+                        : "text-muted-foreground hover:text-foreground active:bg-muted active:text-foreground")
                     }
                   >
                     {dict.nav[item.id]}
@@ -181,10 +184,10 @@ export function IslandShell({
                         aria-current={active ? "page" : undefined}
                         onClick={closeMobile}
                         className={
-                          "block rounded-md px-3 py-1.5 text-sm transition-colors duration-75 ease-out " +
+                          "block rounded-md px-3 py-1.5 text-sm transition-colors duration-75 ease-out hover:bg-muted " +
                           (active
                             ? "font-semibold text-foreground"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground")
+                            : "text-muted-foreground hover:text-foreground")
                         }
                       >
                         {dict.nav[item.id]}

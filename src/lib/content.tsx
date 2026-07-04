@@ -2,9 +2,10 @@ import type { ComponentType } from "react";
 import type { Language } from "./i18n";
 
 // Sektioner som har MDX-innehåll. "home" är inte en menypost men har fortfarande
-// en egen sida (renderad av src/app/[lang]/page.tsx). Writing hanteras separat
-// via src/lib/writing.ts (ett inlägg per katalog med egen frontmatter).
-type SectionKey = "home" | "projects" | "reading" | "investments";
+// en egen sida (renderad av src/app/[lang]/page.tsx). Writing och Investing
+// hanteras separat (ett inlägg per katalog med egen frontmatter) via
+// src/lib/writing.ts respektive src/lib/investing.ts.
+type SectionKey = "home" | "projects" | "reading";
 type MDXModule = { default: ComponentType };
 
 const modules: Record<SectionKey, Record<Language, () => Promise<MDXModule>>> = {
@@ -19,10 +20,6 @@ const modules: Record<SectionKey, Record<Language, () => Promise<MDXModule>>> = 
   reading: {
     sv: () => import("@content/reading/sv.mdx"),
     en: () => import("@content/reading/en.mdx"),
-  },
-  investments: {
-    sv: () => import("@content/investments/sv.mdx"),
-    en: () => import("@content/investments/en.mdx"),
   },
 };
 

@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack --use-npm --yes)",
+      "Bash(npm install *)",
+      "Bash(npx next *)",
+      "Bash(echo \"Started pid $!\")",
+      "Bash(curl -s http://localhost:3000/sv)",
+      "Bash(curl -s http://localhost:3000/en/about)",
+      "Bash(kill 11683)",
+      "Bash(npx tsc *)",
+      "Bash(node *)",
+      "Bash(PORT=3789 npx next *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:3789/sv/writing)",
+      "Bash(curl -s http://127.0.0.1:3789/sv/writing)",
+      "Bash(curl -s http://127.0.0.1:3789/en/writing/knot-for-want-of)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:3789/sv/writing/nonexistent-slug)",
+      "Bash(xargs -r kill)",
+      "Bash(curl -s http://127.0.0.1:3789/en/writing)",
+      "Bash(curl -s http://127.0.0.1:3789/sv/writing/knot-for-want-of)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:3789/sv/projects)",
+      "Bash(curl -s http://127.0.0.1:3789/sv/projects)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:3789/sv/projects/samforfattad-artikel)",
+      "Bash(curl -s http://127.0.0.1:3789/sv/projects/exempeltext)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:3789/sv/investments)",
+      "Bash(curl -s http://127.0.0.1:3789/sv/investments)",
+      "Bash(curl -s http://127.0.0.1:3789/en/investments/evolution-platform-monopoly)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:3789/sv/investments/nonexistent)",
+      "Bash(curl -s http://127.0.0.1:3789/en/investments)",
+      "Bash(curl -s http://127.0.0.1:3789/sv/investments/evolution-platform-monopoly)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:3789/en/investments/nope)"
+    ]
+  }
+}

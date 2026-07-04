@@ -67,16 +67,6 @@ export async function listAllPostParams(): Promise<
   return languages.flatMap((lang) => slugs.map((slug) => ({ lang, slug })));
 }
 
-// Formatterar ISO-datum enligt språket. "2025-12-17" →
-//   sv: "17 december 2025"
-//   en: "December 17, 2025"
-export function formatDate(iso: string, lang: Language): string {
-  const date = new Date(`${iso}T00:00:00Z`);
-  const locale = lang === "sv" ? "sv-SE" : "en-US";
-  return new Intl.DateTimeFormat(locale, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  }).format(date);
-}
+// Datumformattering delas med investing-sektionen – finns i src/lib/date.ts.
+// Re-exporteras här så befintliga call-sites (writing/page.tsx m.fl.) inte behöver ändras.
+export { formatDate } from "./date";

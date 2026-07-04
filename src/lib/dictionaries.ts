@@ -32,6 +32,12 @@ export type Dictionary = {
     back: string;
     postedOn: string;
   };
+  investing: {
+    back: string;
+    sector: string;
+    ticker: string;
+    verdict: string;
+  };
   papers: {
     heading: string;
     course: string;
@@ -91,6 +97,12 @@ const en: Dictionary = {
     back: "Back to Writing",
     postedOn: "Posted on",
   },
+  investing: {
+    back: "Back to Investing",
+    sector: "Sector",
+    ticker: "Ticker",
+    verdict: "Verdict",
+  },
   papers: {
     heading: "Academic writing",
     course: "Course",
@@ -149,6 +161,12 @@ const sv: Dictionary = {
   writing: {
     back: "Tillbaka till Skrivande",
     postedOn: "Publicerat",
+  },
+  investing: {
+    back: "Tillbaka till Investering",
+    sector: "Sektor",
+    ticker: "Ticker",
+    verdict: "Slutsats",
   },
   papers: {
     heading: "Akademiska texter",

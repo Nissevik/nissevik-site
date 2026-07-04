@@ -15,11 +15,13 @@
 }
 
 :root {
-  --background: #ffffff;
+  /* Varm off-white/gräddvit istället för ren vit. Muted/border-tokens är
+     avstämda mot samma varma neutraler så inget ser blåaktigt grått ut. */
+  --background: #faf8f3;
   --foreground: #111111;
-  --muted: #f5f5f5;
-  --muted-foreground: #6b6b6b;
-  --border: #e6e6e6;
+  --muted: #f1ecdf;
+  --muted-foreground: #6a6357;
+  --border: #e5dfcf;
   --accent: #111111;
 }
 
