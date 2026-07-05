@@ -167,3 +167,88 @@ body {
   }
 }
 
+/* Line-art dekor i marginalerna på Reading-sidan. Ikonerna ritas upp via
+   stroke-dashoffset när IntersectionObserver taggar dem som .is-drawn, och
+   fortsätter sedan i en mycket subtil vaggning. currentColor + låg opacitet
+   gör dem diskreta i både ljust och mörkt tema. */
+.margin-icon {
+  display: inline-block;
+  /* Färgade strecktecken syns bra vid ~0.6 mot både cream och dark utan att
+     skrika – varje ikon får sin färg via inline `color:`-style i JSX. */
+  opacity: 0.6;
+  transform: rotate(var(--margin-icon-rot, 0deg));
+  transform-origin: center;
+  will-change: transform;
+}
+.margin-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* Alla stroke-tecknande element börjar dolda (offset 1 av 1). pathLength="1"
+   sätts på SVG-elementen vid inläsning så alla ritas i samma takt. */
+.margin-icon svg path,
+.margin-icon svg line,
+.margin-icon svg polyline,
+.margin-icon svg polygon,
+.margin-icon svg circle,
+.margin-icon svg ellipse,
+.margin-icon svg rect {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.margin-icon.is-drawn svg path,
+.margin-icon.is-drawn svg line,
+.margin-icon.is-drawn svg polyline,
+.margin-icon.is-drawn svg polygon,
+.margin-icon.is-drawn svg circle,
+.margin-icon.is-drawn svg ellipse,
+.margin-icon.is-drawn svg rect {
+  animation: margin-icon-draw 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: var(--margin-icon-delay, 0ms);
+}
+
+/* Sway börjar efter att draw-animationen hunnit klart för denna ikon. */
+.margin-icon.is-drawn {
+  animation: margin-icon-sway 9s ease-in-out infinite;
+  animation-delay: calc(var(--margin-icon-delay, 0ms) + 0.8s);
+}
+
+@keyframes margin-icon-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes margin-icon-sway {
+  0%,
+  100% {
+    transform: rotate(var(--margin-icon-rot, 0deg));
+  }
+  50% {
+    transform: rotate(calc(var(--margin-icon-rot, 0deg) + 1.5deg));
+  }
+}
+
+/* Reduce motion: hoppa animationerna helt, visa ikonerna färdigritade och stilla. */
+@media (prefers-reduced-motion: reduce) {
+  .margin-icon svg path,
+  .margin-icon svg line,
+  .margin-icon svg polyline,
+  .margin-icon svg polygon,
+  .margin-icon svg circle,
+  .margin-icon svg ellipse,
+  .margin-icon svg rect {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    animation: none !important;
+  }
+  .margin-icon.is-drawn {
+    animation: none !important;
+  }
+}
+

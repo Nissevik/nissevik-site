@@ -28,7 +28,9 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:3789/sv/investments/nonexistent)",
       "Bash(curl -s http://127.0.0.1:3789/en/investments)",
       "Bash(curl -s http://127.0.0.1:3789/sv/investments/evolution-platform-monopoly)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:3789/en/investments/nope)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:3789/en/investments/nope)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:3789/sv/reading)",
+      "Bash(curl -s http://127.0.0.1:3789/sv/reading)"
     ]
   }
 }
