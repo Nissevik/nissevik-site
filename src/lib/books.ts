@@ -23,6 +23,9 @@ export type Book = {
 // Listan delas mellan språken. Sorterad nyast läst först.
 // Omslag läggs till efter hand i public/covers/ och pekas ut via `cover`.
 export const books: Book[] = [
+  { title: "Ship of Magic", author: "Robin Hobb", status: "read", rating: 8, date: "2026-06-28", year: 2026, genre: ["Fantasy"], url: "https://www.goodreads.com/book/show/45100.Ship_of_Magic" },
+  { title: "Assassin's Quest", author: "Robin Hobb", status: "read", rating: 7, date: "2026-06-01", year: 2026, genre: ["Fantasy"], url: "https://www.goodreads.com/book/show/33396914-assassin-s-quest" },
+  { title: "Royal Assassin", author: "Robin Hobb", status: "read", rating: 7, date: "2026-05-24", year: 2026, genre: ["Fantasy"], url: "https://www.goodreads.com/book/show/25300956-royal-assassin" },
   { title: "Assassin's Apprentice", author: "Robin Hobb", status: "read", rating: 8, date: "2026-05-15", year: 2026, genre: ["Fantasy"], url: "https://www.goodreads.com/book/show/77197.Assassin_s_Apprentice" },
   { title: "Abundance", author: "Ezra Klein, Derek Thompson", status: "read", rating: null, date: "2026-04-06", year: 2026, genre: ["Politik", "Ekonomi"], url: "https://www.goodreads.com/book/show/176444106-abundance" },
   { title: "Blood Meridian", author: "Cormac McCarthy", status: "read", rating: 5, date: "2026-03-15", year: 2026, genre: ["Skönlitteratur", "Western"], url: "https://www.goodreads.com/book/show/394535.Blood_Meridian_or_the_Evening_Redness_in_the_West" },
