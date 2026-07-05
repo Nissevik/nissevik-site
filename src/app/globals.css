@@ -10,7 +10,9 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
+  /* Sans (brödtext + UI): Instrument Sans. Display (rubriker + brand): Fraunces. */
+  --font-sans: var(--font-instrument-sans);
+  --font-display: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -47,6 +49,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Fraunces används för alla sidrubriker (h1, h2) och för allt som får .font-display
+   (t.ex. brand-länken "Nissevik"). Vi kör med SOFT 100 och WONK 1 för lite extra
+   karaktär, plus en optisk storlek som passar rubrikstorlekar. */
+h1,
+h2,
+.font-display {
+  font-family: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  font-variation-settings: "opsz" 32, "SOFT" 100, "WONK" 1;
+  letter-spacing: -0.012em;
+}
+
+/* Fraunces vill gärna ha lite tightare radhöjd på stora rubriker. */
+h1 {
+  line-height: 1.08;
+}
+h2 {
+  line-height: 1.15;
+}
+
 /* Minimal MDX-typografi utan att kräva ett externt plugin */
 .prose {
   color: var(--foreground);
@@ -54,13 +75,12 @@ body {
   font-size: 1rem;
 }
 .prose h1 {
-  font-size: 1.875rem;
+  font-size: 2rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
   margin-bottom: 1rem;
 }
 .prose h2 {
-  font-size: 1.375rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
@@ -111,9 +131,36 @@ body {
   text-decoration: none;
 }
 
-/* Serif-typografi för Writing. Ärvs ner till rubriker, brödtext, listor osv. */
+/* Serif-typografi för Writing. Ärvs ner till brödtext, listor osv. */
 .font-editorial {
   font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
+}
+
+/* Writing behåller Newsreader även för rubrikerna – Fraunces skulle skära sig
+   mot brödtextens serif. Specificiteten här vinner över den globala h1/h2-regeln. */
+.font-editorial h1,
+.font-editorial h2,
+.font-editorial h3 {
+  font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  font-variation-settings: normal;
+  letter-spacing: -0.005em;
+}
+
+/* Serif-typografi för Investing. Ärvs ner till analyslistans titlar och
+   detaljsidans brödtext. Sammanfattningskortets aside åter­ställer själv
+   till Instrument Sans så etiketter och nyckeltal behåller sitt data-läge. */
+.font-analysis {
+  font-family: var(--font-spectral), Georgia, "Times New Roman", serif;
+}
+
+/* Investings rubriker byter från global Fraunces till Spectral. Specificiteten
+   här vinner över den globala h1/h2-regeln, precis som Writing-overriden. */
+.font-analysis h1,
+.font-analysis h2,
+.font-analysis h3 {
+  font-family: var(--font-spectral), Georgia, "Times New Roman", serif;
+  font-variation-settings: normal;
+  letter-spacing: -0.005em;
 }
 
 /* Redaktionell blockquote: italic, centrerad, dämpad. Endast inne i Writing. */
@@ -218,6 +265,21 @@ body {
   animation-delay: calc(var(--margin-icon-delay, 0ms) + 0.8s);
 }
 
+/* Redan färdigritad (t.ex. slot som återkommer efter att sidan växt) – hoppa
+   draw-animationen helt och visa slutläget direkt. Vaggningen fortsätter. */
+.margin-icon.is-static svg path,
+.margin-icon.is-static svg line,
+.margin-icon.is-static svg polyline,
+.margin-icon.is-static svg polygon,
+.margin-icon.is-static svg circle,
+.margin-icon.is-static svg ellipse,
+.margin-icon.is-static svg rect {
+  stroke-dashoffset: 0;
+}
+.margin-icon.is-static {
+  animation: margin-icon-sway 9s ease-in-out infinite;
+}
+
 @keyframes margin-icon-draw {
   to {
     stroke-dashoffset: 0;
@@ -247,7 +309,8 @@ body {
     stroke-dashoffset: 0;
     animation: none !important;
   }
-  .margin-icon.is-drawn {
+  .margin-icon.is-drawn,
+  .margin-icon.is-static {
     animation: none !important;
   }
 }

@@ -29,7 +29,10 @@ export default async function AnalysisPage({
 
   return (
     <Page>
-      <article>
+      {/* Investing-scope: Spectral för rubrik, datum-rad och prosan. Summary-
+          kortet nedan resettas tillbaka till Instrument Sans så etiketter och
+          nyckeltal håller sig i data-läge. */}
+      <article className="font-analysis">
         <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
           {analysis.meta.title}
         </h1>
@@ -64,7 +67,16 @@ function SummaryCard({
   if (meta.verdict) facts.push({ label: dict.verdict, value: meta.verdict });
 
   return (
-    <aside className="my-8 rounded-lg border border-border bg-muted/40 p-6">
+    // Kortet är data, inte läs-text – återställ till Instrument Sans så det
+    // inte ärver Spectral från .font-analysis-scopet runt article. Inline style
+    // vinner över scope-klassen oavsett tailwind-layer.
+    <aside
+      className="my-8 rounded-lg border border-border bg-muted/40 p-6"
+      style={{
+        fontFamily:
+          "var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif",
+      }}
+    >
       <p className="text-base leading-relaxed text-foreground">
         {meta.thesis}
       </p>

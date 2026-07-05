@@ -152,7 +152,7 @@ export function SidebarShell({
           <Link
             href={`/${lang}`}
             onClick={handleNavClick}
-            className="font-medium text-foreground hover:underline"
+            className="font-display text-base font-medium text-foreground hover:underline"
           >
             {dict.siteTitle}
           </Link>

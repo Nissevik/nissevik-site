@@ -17,9 +17,11 @@ export default async function InvestingPage({
 
   return (
     <Page>
-      {/* Divide-y ger den tunna avdelaren mellan rader; py-8 på varje rad
+      {/* Investing-scope: Spectral för titlar och thesis-brödrader. Datum och
+          sektor/ticker-metan följer med i listan – kort text, ändå läsligt.
+          Divide-y ger den tunna avdelaren mellan rader; py-8 på varje rad
           håller den luftig, som Not Borings arkiv. */}
-      <ul className="divide-y divide-border">
+      <ul className="font-analysis divide-y divide-border">
         {analyses.map((a) => {
           const tags = [a.meta.sector, a.meta.ticker].filter(Boolean);
           return (

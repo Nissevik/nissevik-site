@@ -96,6 +96,37 @@ export function IslandShell({
   // Om mobilmenyn är öppen tvingar vi fram islanden även vid nedåtskroll.
   const shouldHide = hidden && !mobileOpen;
 
+  // Varje nav-etikett matchar sin sidas rubrik-typsnitt: Writing → Newsreader,
+  // Reading → Fraunces, Investing → Spectral. Projects stannar på body-fonten
+  // (Instrument Sans) och Nissevik-brandet hanteras separat via .font-display.
+  // Storlek och vikt hålls konstant på .text-sm så raden ser balanserad ut.
+  const navFontStyle = (
+    id: NavItem["id"],
+  ): React.CSSProperties | undefined => {
+    if (id === "writing") {
+      return {
+        fontFamily:
+          'var(--font-newsreader), Georgia, "Times New Roman", serif',
+      };
+    }
+    if (id === "reading") {
+      // Fraunces med dämpade axlar (opsz 14, WONK 0, SOFT 0) så bokstavs-
+      // formerna inte sticker ut vid nav-storlek.
+      return {
+        fontFamily:
+          'var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif',
+        fontVariationSettings: '"opsz" 14, "SOFT" 0, "WONK" 0',
+      };
+    }
+    if (id === "investments") {
+      return {
+        fontFamily:
+          'var(--font-spectral), Georgia, "Times New Roman", serif',
+      };
+    }
+    return undefined;
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* Island uppe till vänster. Lätt rundade hörn (rounded-lg) – inte helrund pill.
@@ -113,13 +144,15 @@ export function IslandShell({
             // Litet gap kvar på mobil så brand + hamburgare inte klämmer ihop.
             className="flex items-center gap-1 rounded-lg border border-border bg-background/85 px-2 py-1.5 shadow-sm backdrop-blur md:gap-0"
           >
-            {/* Nissevik = brand + hem-länk. Bold/markerad endast när vi är på startsidan. */}
+            {/* Nissevik = brand + hem-länk. Fraunces i display-läge via
+                .font-display – behåller opsz 32 / SOFT 100 / WONK 1 från
+                den globala regeln. Bold/markerad endast när vi är på startsidan. */}
             <Link
               href={basePath}
               onClick={closeMobile}
               aria-current={homeActive ? "page" : undefined}
               className={
-                "rounded-md px-2.5 py-1 text-sm tracking-tight transition-colors duration-75 ease-out hover:bg-muted " +
+                "font-display rounded-md px-2.5 py-1 text-base transition-colors duration-75 ease-out hover:bg-muted " +
                 (homeActive
                   ? "font-semibold text-foreground"
                   : "text-muted-foreground hover:text-foreground")
@@ -139,6 +172,7 @@ export function IslandShell({
                     key={item.id}
                     href={href}
                     aria-current={active ? "page" : undefined}
+                    style={navFontStyle(item.id)}
                     className={
                       "whitespace-nowrap rounded-md px-2.5 py-1 text-sm transition-colors duration-75 ease-out hover:bg-muted " +
                       (active
@@ -183,6 +217,7 @@ export function IslandShell({
                         href={href}
                         aria-current={active ? "page" : undefined}
                         onClick={closeMobile}
+                        style={navFontStyle(item.id)}
                         className={
                           "block rounded-md px-3 py-1.5 text-sm transition-colors duration-75 ease-out hover:bg-muted " +
                           (active

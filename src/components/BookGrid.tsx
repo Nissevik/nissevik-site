@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useId, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Book, BookStatus } from "@/lib/books";
 import type { Dictionary } from "@/lib/dictionaries";
 
@@ -94,6 +95,9 @@ export function BookGrid({
   const [year, setYear] = useState<YearFilter>("all");
   const [genre, setGenre] = useState<GenreFilter>("all");
 
+  // Respektera användarens rörelsepreferens – bygger stum output i så fall.
+  const shouldReduceMotion = useReducedMotion();
+
   // Unika år och genrer utifrån datan
   const years = useMemo(() => {
     const set = new Set<number>();
@@ -138,9 +142,52 @@ export function BookGrid({
       />
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-        {visible.map((book, i) => (
-          <BookCard key={`${book.title}-${i}`} book={book} dict={dict} />
-        ))}
+        {/* popLayout låter kvarvarande kort börja flyta till nya positioner
+            direkt medan bortfiltrerade kort fadear ut. */}
+        <AnimatePresence mode="popLayout">
+          {visible.map((book, i) => (
+            <motion.div
+              // Stabil identitet på titel + författare så samma bok behåller
+              // sitt motion-tillstånd över sort- och filterbyten.
+              key={`${book.title}::${book.author}`}
+              layout={!shouldReduceMotion}
+              initial={
+                shouldReduceMotion ? false : { opacity: 0, y: 8 }
+              }
+              animate={{ opacity: 1, y: 0 }}
+              exit={
+                shouldReduceMotion
+                  ? { opacity: 1 }
+                  : { opacity: 0, transition: { duration: 0.15 } }
+              }
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0 }
+                  : {
+                      // Snabb och diskret fjäder på layout-omflyttningar
+                      layout: {
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 40,
+                        mass: 0.6,
+                      },
+                      // Kort staggrad in-fade – capa fördröjningen så den
+                      // aldrig känns långsam trots många kort
+                      opacity: {
+                        duration: 0.25,
+                        delay: Math.min(i * 0.02, 0.35),
+                      },
+                      y: {
+                        duration: 0.25,
+                        delay: Math.min(i * 0.02, 0.35),
+                      },
+                    }
+              }
+            >
+              <BookCard book={book} dict={dict} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </>
   );
@@ -168,9 +215,18 @@ function Controls({
   genres: string[];
 }) {
   // Enda kompakt rad utan versala etiketter. Grupperna separeras visuellt av
-  // svaga "|"-avdelare istället för prefix-texter.
+  // svaga "|"-avdelare istället för prefix-texter. Fraunces matchar Reading:s
+  // rubrik och bok-titlar; dämpade axlar så textstorlek 12–14px inte blir wonky.
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
+    <div
+      className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs"
+      style={{
+        fontFamily:
+          'var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif',
+        fontVariationSettings: '"opsz" 14, "SOFT" 0, "WONK" 0',
+        letterSpacing: "-0.005em",
+      }}
+    >
       <InlineTabs<SortKey>
         ariaLabel={dict.controls.sort}
         value={sortKey}
@@ -475,8 +531,20 @@ function BookCard({
         )}
       </div>
 
-      {/* Titel + författare */}
-      <div className="mt-3 text-sm font-medium leading-snug text-foreground">
+      {/* Titel + författare. Titeln får Fraunces för karaktär, men vid kort-
+          storlek dämpas axlarna: opsz 14 (text-optisk), SOFT 0 och WONK 0 så
+          bokstavsformerna håller sig läsbara och inte egensinniga. En smula
+          större font-size + tightare leading balanserar Fraunces rytm mot
+          Instrument Sans i författare/metadata under. */}
+      <div
+        className="mt-3 text-[0.9375rem] font-medium leading-tight text-foreground"
+        style={{
+          fontFamily:
+            'var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif',
+          fontVariationSettings: '"opsz" 14, "SOFT" 0, "WONK" 0',
+          letterSpacing: "-0.005em",
+        }}
+      >
         {book.title}
       </div>
       <div className="mt-0.5 text-xs text-muted-foreground">{book.author}</div>
